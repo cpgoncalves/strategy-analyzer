@@ -64,52 +64,76 @@ class Agent:
                         Node.reverse_percol = Node.reverse_percol + [OtherNode]
             num = self.reverseCheck()
     
-    def evaluate(self,value,element,objectives,eval_type):
+    def evaluate(self,value,element,objectives,eval_type,file):
         if eval_type == 'action':
             if element[4] == value:
-                print("\nAction:", element[0].name)
+                file.write("\n\nAction: "+str(element[0].name))
+                print("\nAction:",element[0].name)
+                file.write("\nBase Score: "+str(element[1]))
                 print("Base Score:",element[1])
+                file.write("\nTactical Openings Score: "+str(element[2]))
                 print("Tactical Openings Score:", element[2])
+                file.write("\nEvent Openings Score: "+str(element[3]))
                 print("Event Openings Score:", element[3])
+                file.write("\n\nLeading to the Strategic Objectives:")
                 print("\nLeading to the Strategic Objectives:")
                 for Node in element[5]:
+                    file.write("\n"+Node.name)
                     print(Node.name)
                 if element[2] != 0:
+                    file.write("\n\nLeading to the Tactical Openings:")
                     print("\nLeading to the Tactical Openings:")
                     for Node in element[6]:
                         if Node not in objectives:
+                            file.write("\n"+Node.name)
                             print(Node.name)
                         else:
+                            file.write("\n"+Node.name+" (Objective)")
                             print(Node.name, "(Objective)")
                 if element[3] != 0:
+                    file.write("\n\nLeading to the Events:")
                     print("\nLeading to the Events:")
                     for Node in element[7]:
                         if Node not in objectives:
+                            file.write("\n"+Node.name)
                             print(Node.name)
                         else:
+                            file.write("\n"+Node.name+" (Objective)")
                             print(Node.name, "(Objective)")
         else:
             if element[4] == value:
+                file.write("\n\nEvent: "+str(element[0].name))
                 print("\nEvent:", element[0].name)
+                file.write("\nBase Score: "+str(element[1]))
                 print("Base Score:",element[1])
+                file.write("\nTactical Openings Score: "+str(element[2]))
                 print("Tactical Openings Score:", element[2])
+                file.write("\nEvent Openings Score: "+str(element[3]))
                 print("Event Openings Score:", element[3])
+                file.write("\n\nLeading to the Strategic Objectives:")
                 print("\nLeading to the Strategic Objectives:")
                 for Node in element[5]:
+                    file.write("\n"+Node.name)
                     print(Node.name)
                 if element[2] != 0:
+                    file.write("\n\nLeading to the Tactical Openings:")
                     print("\nLeading to the Tactical Openings:")
                     for Node in element[6]:
                         if Node not in objectives:
+                            file.write("\n"+Node.name)
                             print(Node.name)
                         else:
+                            file.write("\n"+Node.name+" (Objective)")
                             print(Node.name, "(Objective)")
                 if element[3] != 0:
+                    file.write("\n\nLeading to the Events:")
                     print("\nLeading to the Events:")
                     for Node in element[7]:
                         if Node not in objectives:
+                            file.write("\n"+Node.name)
                             print(Node.name)
                         else:
+                            file.write("\n"+Node.name+" (Objective)")
                             print(Node.name, "(Objective)")
         
 
@@ -120,9 +144,11 @@ class Agent:
         reverse_percolation = []
         actions_scores = []
         events_scores = []
-                
+        
+        analysis=open("Analysis Report.txt","w")
         for Objective in objectives:
             if len(Objective.origins) == 0:
+                analysis.write("\n\nObjective does not have sources in the web!")
                 print("\nObjective does not have sources in the web!")
             else:
                 self.reversePercolateNode(Objective) 
@@ -173,24 +199,28 @@ class Agent:
         len_actions = len(actions_scores)
         len_events = len(events_scores)
         
+        analysis.write("\n\n")
         print("\n")
+        analysis.write("Actions Analysis:")
         print("\nActions Analysis:")
         
         if len_actions > 1:
             for t in range(0,len_actions):
                 for element in actions:
-                    self.evaluate(actions_scores[t],element,objectives,eval_type='action')
+                    self.evaluate(actions_scores[t],element,objectives,eval_type='action',file=analysis)
         else:
             for element in actions:
-                self.evaluate(actions_scores[0],element,objectives,eval_type='action')
+                self.evaluate(actions_scores[0],element,objectives,eval_type='action',file=analysis)
                 
+        analysis.write("\n\n")
         print("\n")
+        analysis.write("\n\nEvents Analysis:")
         print("\nEvents Analysis:")
         
         if len_events > 1:
             for t in range(0,len_events):
                 for element in events:
-                    self.evaluate(events_scores[t],element,objectives,eval_type='event')
+                    self.evaluate(events_scores[t],element,objectives,eval_type='event',file=analysis)
         else:
             for element in events:
-                self.evaluate(events_scores[0],element,objectives,eval_type='event')
+                self.evaluate(events_scores[0],element,objectives,eval_type='event',file=analysis)
